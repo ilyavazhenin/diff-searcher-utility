@@ -1,0 +1,26 @@
+{
+  "name": "@hexlet/code",
+  "version": "1.0.0",
+  "description": "It finds diff between 2 files and show them in console",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ilyavazhenin/frontend-project-46.git"
+  },
+  "author": "Ilia Vazhenin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ilyavazhenin/frontend-project-46/issues"
+  },
+  "homepage": "https://github.com/ilyavazhenin/frontend-project-46#readme",
+  "bin": {
+    "gendiff": "bin/gendiff.js"
+  },
+  "dependencies": {
+    "commander": "^9.4.1"
+  }
+}
