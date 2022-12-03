@@ -2,9 +2,16 @@
 import { Command } from 'commander';
 const program = new Command();
 
+const takeFilePathsFromCLI = (path1, path2) => {
+  console.log(path1, path2, 'path1 and path2 here');
+};
+
 program
   .name('gendiff')
   .description('Compares two configuration files and shows a difference.')
-  .version('0.0.1');
+  .version('0.0.1')
+  .arguments('<filepath1> <filepath2>')
+  .option('-f, --format <type>', 'output format')
+  .action(takeFilePathsFromCLI);
 
 program.parse();
