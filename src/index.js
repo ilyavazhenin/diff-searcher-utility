@@ -4,43 +4,8 @@ import _ from 'lodash';
 import fs from 'fs';
 import path from 'path';
 
-const compare = (obj1, obj2) => {
-  const arrayKeys1 = Object.keys(obj1);
-  const arrayKeys2 = Object.keys(obj2);
-  const uniqueKeysFrom1 = _.difference(arrayKeys1, arrayKeys2);
-  const result = [];
-
-  for (const key of uniqueKeysFrom1) {
-    const sign = '  - ';
-    result.push([key, obj1[key], sign]);
-  }
-
-  for (const key of arrayKeys1) {
-    if (arrayKeys2.includes(key)) {
-      if (obj2[key] === obj1[key]) {
-        const sign = '    ';
-        result.push([key, obj1[key], sign]);
-      }
-
-      if (obj2[key] !== obj1[key]) {
-        let sign = '  - ';
-        result.push([key, obj1[key], sign]);
-        sign = '  + ';
-        result.push([key, obj2[key], sign]);
-      }
-    }
-  }
-
-  for (const key of arrayKeys2) {
-    if (!arrayKeys1.includes(key)) {
-      const sign = '  + ';
-      result.push([key, obj2[key], sign]);
-    }
-  }
-
-  const sortedResult = _.sortBy(result, [0]);
-
-  const formattedArray = sortedResult.map((elem) => {
+const makeOutputString = (arrayOfChanges) => {
+  const formattedArray = arrayOfChanges.map((elem) => {
     const [key, value, sign] = elem;
     return `${sign}${key}: ${value}`;
   });
@@ -49,6 +14,41 @@ const compare = (obj1, obj2) => {
   const outputString = formattedArray.join('\n');
   console.log(outputString);
   return outputString;
+};
+
+const compare = (obj1, obj2) => {
+  const arrayKeys1 = Object.keys(obj1);
+  const arrayKeys2 = Object.keys(obj2);
+  const tempArray = [];
+
+  for (const key of arrayKeys1) {
+    if (arrayKeys2.includes(key)) {
+      if (obj2[key] === obj1[key]) {
+        const sign = '    ';
+        tempArray.push([key, obj1[key], sign]);
+      }
+
+      if (obj2[key] !== obj1[key]) {
+        let sign = '  - ';
+        tempArray.push([key, obj1[key], sign]);
+        sign = '  + ';
+        tempArray.push([key, obj2[key], sign]);
+      }
+    } else {
+      const sign = '  - ';
+      tempArray.push([key, obj1[key], sign]);
+    }
+  }
+
+  for (const key of arrayKeys2) {
+    if (!arrayKeys1.includes(key)) {
+      const sign = '  + ';
+      tempArray.push([key, obj2[key], sign]);
+    }
+  }
+
+  const sortedChanges = _.sortBy(tempArray, [0]);
+  return makeOutputString(sortedChanges);
 };
 
 export default (path1, path2) => {
