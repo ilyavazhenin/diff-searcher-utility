@@ -14,7 +14,7 @@ rules: {
             "js": "ignorePackages"
         }
   
-    ]
+    ],
     "extends": [
     "plugin:jest/recommended"
   ]}
