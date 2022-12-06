@@ -5,8 +5,7 @@ make link:
 	npm link
 
 make lint:
-	npx eslint .
+	npx jest --coverage
 
 make jest:
 	npx jest
-
