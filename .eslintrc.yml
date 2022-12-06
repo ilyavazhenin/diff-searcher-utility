@@ -1,8 +1,8 @@
 env:
   browser: true
   es2021: true
-  jest/globals: true
-extends: airbnb-base
+  # jest/globals: true
+extends: airbnb-base, 
 overrides: []
 parserOptions:
   ecmaVersion: latest
@@ -13,4 +13,8 @@ rules: {
         {
             "js": "ignorePackages"
         }
-    ]}
+  
+    ]
+    "extends": [
+    "plugin:jest/recommended"
+  ]}
