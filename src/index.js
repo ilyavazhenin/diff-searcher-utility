@@ -24,26 +24,21 @@ const compare = (obj1, obj2) => {
   for (const key of arrayKeys1) {
     if (arrayKeys2.includes(key)) {
       if (obj2[key] === obj1[key]) {
-        const sign = '    ';
-        tempArray.push([key, obj1[key], sign]);
+        tempArray.push([key, obj1[key], '    ']);
       }
 
       if (obj2[key] !== obj1[key]) {
-        let sign = '  - ';
-        tempArray.push([key, obj1[key], sign]);
-        sign = '  + ';
-        tempArray.push([key, obj2[key], sign]);
+        tempArray.push([key, obj1[key], '  - ']);
+        tempArray.push([key, obj2[key], '  + ']);
       }
     } else {
-      const sign = '  - ';
-      tempArray.push([key, obj1[key], sign]);
+      tempArray.push([key, obj1[key], '  - ']);
     }
   }
 
   for (const key of arrayKeys2) {
     if (!arrayKeys1.includes(key)) {
-      const sign = '  + ';
-      tempArray.push([key, obj2[key], sign]);
+      tempArray.push([key, obj2[key], '  + ']);
     }
   }
 
