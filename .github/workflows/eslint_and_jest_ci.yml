@@ -20,11 +20,16 @@ jobs:
     - name: Install dependencies
       run: make install
 
-    # - name: Install eslint locally
-    #   run: npm install --save-dev eslint-config-airbnb-base
-
     - name: Run eslint
       run: make lint
 
     - name: Run testing
       run: make jest
+
+    - name: Test & publish code coverage
+        uses: paambaati/codeclimate-action@v3.0.0
+        env:
+          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+        with:
+          coverageCommand: make test-coverage
+          debug: true

@@ -8,4 +8,7 @@ make lint:
 	npx eslint .
 
 make jest:
+	npx jest
+
+make test-coverage:
 	npx jest --coverage
