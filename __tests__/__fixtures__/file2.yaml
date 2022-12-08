@@ -1,0 +1,6 @@
+wheels: 8
+name: santa
+car: deers
+carID: 175.215.0.1
+canFly: false
+amountOfDeers: 2
