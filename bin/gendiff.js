@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { Command } from 'commander';
-import showDiff from '../src/index.js';
+import showDiff from '../src/parser.js';
 
 const program = new Command();
 
