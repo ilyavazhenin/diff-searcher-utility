@@ -1,4 +1,4 @@
-import showDiff from '../src/index.js';
+import compare from '../src/index.js';
 
 test('flat objects, standard case, json', () => {
   const filepath1 = '__tests__/__fixtures__/file1.json';
@@ -12,7 +12,7 @@ test('flat objects, standard case, json', () => {
   + verbose: true
 }`;
 
-  expect(showDiff(filepath1, filepath2)).toEqual(output);
+  expect(compare(filepath1, filepath2)).toEqual(output);
 });
 
 test('file 1 empty', () => {
@@ -24,7 +24,7 @@ test('file 1 empty', () => {
   + verbose: true
 }`;
 
-  expect(showDiff(filepath1, filepath2)).toEqual(output);
+  expect(compare(filepath1, filepath2)).toEqual(output);
 });
 
 test('files are the same', () => {
@@ -37,7 +37,7 @@ test('files are the same', () => {
     timeout: 50
 }`;
 
-  expect(showDiff(filepath1, filepath2)).toEqual(output);
+  expect(compare(filepath1, filepath2)).toEqual(output);
 });
 // to do: write diffs with +
 test('same files, diff values', () => {
@@ -54,5 +54,5 @@ test('same files, diff values', () => {
   + timeout: 150
 }`;
 
-  expect(showDiff(filepath1, filepath2)).toEqual(output);
+  expect(compare(filepath1, filepath2)).toEqual(output);
 });
