@@ -20,9 +20,9 @@ const makeOutputString = (arrayOfChanges) => {
 const compare = (filePath1, filePath2) => {
   const [obj1, obj2] = parseFiles(filePath1, filePath2);
   const arrayKeys1 = Object.keys(obj1);
-  console.log(arrayKeys1); // to do: remove in production
+  // console.log(arrayKeys1); // TODO: remove in production
   const arrayKeys2 = Object.keys(obj2);
-  console.log(arrayKeys2); // to do: remove in production
+  // console.log(arrayKeys2); // TODO: remove in production
   const tempArray = [];
 
   for (const key of arrayKeys1) {
