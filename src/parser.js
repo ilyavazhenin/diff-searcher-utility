@@ -18,6 +18,7 @@ const isJson = (string1, string2) => {
 };
 
 export default (path1, path2) => {
+  console.log(path1, path2, 'PATHS!!!!!!!!! to parse');
   // console.log(path1); TODO: remove on delivering to production
   // console.log(path2);
   // yaml parsing:
@@ -32,5 +33,5 @@ export default (path1, path2) => {
     const fileData2 = JSON.parse(fs.readFileSync(path.resolve(path2)));
     return [fileData1, fileData2];
   }
-  throw console.error('Different file formats, both should be "yaml" or "json".');
+  throw console.error('Different file formats, both should be "yaml/yml" or "json".');
 };

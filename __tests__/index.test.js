@@ -1,20 +1,5 @@
 import compare from '../src/index.js';
 
-test('flat objects, standard case, json', () => {
-  const filepath1 = '__tests__/__fixtures__/file1.json';
-  const filepath2 = '__tests__/__fixtures__/file2.json';
-  const output = `{
-  - follow: false
-    host: hexlet.io
-  - proxy: 123.234.53.22
-  - timeout: 50
-  + timeout: 20
-  + verbose: true
-}`;
-
-  expect(compare(filepath1, filepath2)).toEqual(output);
-});
-
 test('file 1 empty', () => {
   const filepath1 = '__tests__/__fixtures__/file1-empty.json';
   const filepath2 = '__tests__/__fixtures__/file2.json';
@@ -24,7 +9,7 @@ test('file 1 empty', () => {
   + verbose: true
 }`;
 
-  expect(compare(filepath1, filepath2)).toEqual(output);
+  expect(compare(filepath1, filepath2, 'stylish')).toEqual(output);
 });
 
 test('files are the same', () => {
@@ -37,7 +22,7 @@ test('files are the same', () => {
     timeout: 50
 }`;
 
-  expect(compare(filepath1, filepath2)).toEqual(output);
+  expect(compare(filepath1, filepath2, 'stylish')).toEqual(output);
 });
 
 test('same files, diff values', () => {
@@ -54,7 +39,59 @@ test('same files, diff values', () => {
   + timeout: 150
 }`;
 
-  expect(compare(filepath1, filepath2)).toEqual(output);
+  expect(compare(filepath1, filepath2, 'stylish')).toEqual(output);
+});
+
+// TODO: rework similar parts of paths in fixtures
+test('nested yaml', () => {
+  const filepath1 = '__tests__/__fixtures__/nested-yaml1.yaml';
+  const filepath2 = '__tests__/__fixtures__/nested-yaml2.yaml';
+  const output = `{
+    common: {
+      + follow: false
+        setting1: Value 1
+      - setting2: 200
+      - setting3: true
+      + setting3: null
+      + setting4: blah blah
+      + setting5: {
+            key5: value5
+        }
+        setting6: {
+            doge: {
+              - wow: null
+              + wow: so much
+            }
+            key: value
+          + ops: vops
+        }
+    }
+    group1: {
+      - baz: bas
+      + baz: bars
+        foo: bar
+      - nest: {
+            key: value
+        }
+      + nest: str
+    }
+  - group2: {
+        abc: 12345
+        deep: {
+            id: 45
+        }
+    }
+  + group3: {
+        deep: {
+            id: {
+                number: 45
+            }
+        }
+        fee: 100500
+    }
+}`;
+
+  expect(compare(filepath1, filepath2, 'stylish')).toEqual(output);
 });
 
 // TODO: rework similar parts of paths in fixtures
@@ -106,5 +143,5 @@ test('nested json', () => {
     }
 }`;
 
-  expect(compare(filepath1, filepath2)).toEqual(output);
+  expect(compare(filepath1, filepath2, 'stylish')).toEqual(output);
 });
