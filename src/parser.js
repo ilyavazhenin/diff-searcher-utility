@@ -18,9 +18,6 @@ const isJson = (string1, string2) => {
 };
 
 export default (path1, path2) => {
-  console.log(path1, path2, 'PATHS!!!!!!!!! to parse');
-  // console.log(path1); TODO: remove on delivering to production
-  // console.log(path2);
   // yaml parsing:
   if (isYaml(path1, path2)) {
     const fileData1 = yaml.load(fs.readFileSync(path1, 'utf8'));

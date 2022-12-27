@@ -12,7 +12,7 @@ program
   .option('-f, --format <type>', 'output format', 'stylish')
   // .action(showDiff);
   .action(() => {
-    showDiff(program.args[0], program.args[1], program.opts().format);
+    console.log(showDiff(program.args[0], program.args[1], program.opts().format));
   });
 
 program.parse();

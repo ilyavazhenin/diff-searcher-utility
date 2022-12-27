@@ -2,77 +2,87 @@
 /* eslint-disable no-restricted-syntax */
 import _ from 'lodash';
 import parseFiles from './parser.js';
-import makeOutputString from './formatter.js';
+import makeOutput from './formatter.js';
 
-const compare = (filePath1, filePath2, format) => {
-  // TODO: remove logs:
-  console.log(filePath1, filePath2, format, 'all the args i got from input');
+const compare = (filePath1, filePath2) => {
   const [object1, object2] = parseFiles(filePath1, filePath2);
-  const recursiveCompare = (obj1, obj2, depth = 0) => {
-    const arrayKeys1 = _.sortBy(Object.keys(obj1), [0]);
-    const arrayKeys2 = _.sortBy(Object.keys(obj2), [0]);
-    const tempArray = [];
+  const recursiveCompare = (obj1, obj2, parentKey = '', depth = 0) => {
+    const keys1 = _.sortBy(Object.keys(obj1), [0]);
+    const keys2 = _.sortBy(Object.keys(obj2), [0]);
 
-    for (const key of arrayKeys1) {
-      if (arrayKeys2.includes(key)) {
-        // if they are NOT two objects at the same time:
-        if (!_.isObject(obj1[key]) || !_.isObject(obj2[key])) {
-          if (obj2[key] === obj1[key]) {
-            tempArray.push([key, obj1[key], '    ', depth]);
-          }
+    const arrayOfChanges = [];
 
-          if (obj2[key] !== obj1[key]) {
-            if (!_.isObject(obj1[key])) {
-              tempArray.push([key, obj1[key], '  - ', depth]);
-            }
-
-            if (_.isObject(obj1[key])) {
-              tempArray.push([key, recursiveCompare(obj1[key], obj1[key], depth + 1), '  - ', depth]);
-            }
-
-            if (!_.isObject(obj2[key])) {
-              tempArray.push([key, obj2[key], '  + ', depth]);
-            }
-
-            if (_.isObject(obj2[key])) {
-              tempArray.push([key, recursiveCompare(obj2[key], obj2[key], depth + 1), '  - ', depth]);
-            }
-          }
+    keys1.forEach((key) => {
+      if (keys2.includes(key)) {
+        if (obj1[key] === obj2[key]
+          && (!_.isPlainObject(obj1[key]) || !_.isPlainObject(obj2[key]))) {
+          const object = {
+            prevValue: obj1[key],
+            newValue: obj2[key],
+            keyPath: `${key}`,
+            parentKey: `${parentKey}.${key}`.slice(1),
+            conclusion: 'no change',
+            depth,
+          };
+          arrayOfChanges.push(object);
         }
 
-        // if they ARE objects at the same time:
-        if (_.isObject(obj1[key]) && _.isObject(obj2[key])) {
-          const currentDepth = depth + 1;
-          tempArray.push([key, recursiveCompare(obj1[key], obj2[key], currentDepth), '    ', depth]);
-        }
-      } else { // if KEY isn't included in 2nd arr:
-        if (!_.isObject(obj1[key])) {
-          tempArray.push([key, obj1[key], '  - ', depth]);
-        }
-
-        if (_.isObject(obj1[key])) {
-          tempArray.push([key, recursiveCompare(obj1[key], obj1[key], depth + 1), '  - ', depth]);
-        }
-      }
-    }
-    // check for unique keys that are ONLY in 2nd array:
-    for (const key of arrayKeys2) {
-      if (!arrayKeys1.includes(key)) {
-        if (!_.isObject(obj2[key])) {
-          tempArray.push([key, obj2[key], '  + ', depth]);
+        if (obj1[key] !== obj2[key]
+          && (!_.isPlainObject(obj1[key]) || !_.isPlainObject(obj2[key]))) {
+          const object = {
+            prevValue: _.isPlainObject(obj1[key]) ? recursiveCompare(obj1[key], obj1[key], `${parentKey}.${key}`, depth + 1) : obj1[key],
+            newValue: _.isPlainObject(obj2[key]) ? recursiveCompare(obj2[key], obj2[key], `${parentKey}.${key}`, depth + 1) : obj2[key],
+            keyPath: `${key}`,
+            parentKey: `${parentKey}.${key}`.slice(1),
+            conclusion: 'updated',
+            depth,
+          };
+          arrayOfChanges.push(object);
         }
 
-        if (_.isObject(obj2[key])) {
-          tempArray.push([key, recursiveCompare(obj2[key], obj2[key], depth + 1), '  + ', depth]);
+        if (_.isPlainObject(obj1[key]) && _.isPlainObject(obj2[key])) {
+          const object = {
+            prevValue: recursiveCompare(obj1[key], obj2[key], `${parentKey}.${key}`, depth + 1),
+            newValue: recursiveCompare(obj1[key], obj2[key], `${parentKey}.${key}`, depth + 1),
+            keyPath: `${key}`,
+            parentKey: `${parentKey}.${key}`.slice(1),
+            conclusion: 'no change',
+            depth,
+          };
+          arrayOfChanges.push(object);
         }
       }
-    }
 
-    const sortedChanges = _.sortBy(tempArray, [0]);
-    return makeOutputString(sortedChanges, format);
+      if (!keys2.includes(key)) {
+        const object = {
+          prevValue: _.isPlainObject(obj1[key]) ? recursiveCompare(obj1[key], obj1[key], `${parentKey}.${key}`, depth + 1) : obj1[key],
+          keyPath: `${key}`,
+          parentKey: `${parentKey}.${key}`.slice(1),
+          conclusion: 'removed',
+          depth,
+        };
+        arrayOfChanges.push(object);
+      }
+    });
+
+    keys2.forEach((key) => {
+      if (!keys1.includes(key)) {
+        const object = {
+          newValue: _.isPlainObject(obj2[key]) ? recursiveCompare(obj2[key], obj2[key], `${parentKey}.${key}`, depth + 1) : obj2[key],
+          keyPath: `${key}`,
+          parentKey: `${parentKey}.${key}`.slice(1),
+          conclusion: 'added',
+          depth,
+        };
+        arrayOfChanges.push(object);
+      }
+    });
+
+    return _.sortBy(arrayOfChanges, ['keyPath']);
   };
 
   return recursiveCompare(object1, object2);
 };
 
-export default compare;
+const showDiff = (path1, path2, format) => makeOutput(compare(path1, path2), format);
+export default showDiff;

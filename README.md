@@ -7,5 +7,5 @@ See commit story, still here's a lot to be done. Check asciinema at the bottom o
 ### What we got here?
 It's gonna be a JS library that finds diff between two files and shows this diff in command line.
 
-### Demo (step 5/8)
-[![asciicast](https://asciinema.org/a/e7uXabMrtTl9nkHu1w3y4JVxW.svg)](https://asciinema.org/a/e7uXabMrtTl9nkHu1w3y4JVxW)
+### Demo (step 7/8)
+[![asciicast](https://asciinema.org/a/TusWYAKzXy4GAhiIXZ4iq0A0N.svg)](https://asciinema.org/a/TusWYAKzXy4GAhiIXZ4iq0A0N)
