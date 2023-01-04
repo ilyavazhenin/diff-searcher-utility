@@ -8,4 +8,4 @@ See commit story, still here's a lot to be done. Check asciinema at the bottom o
 It's gonna be a JS library that finds diff between two files and shows this diff in command line.
 
 ### Demo (step 7/8)
-[![asciicast](https://asciinema.org/a/TusWYAKzXy4GAhiIXZ4iq0A0N.svg)](https://asciinema.org/a/TusWYAKzXy4GAhiIXZ4iq0A0N)
+[![asciicast](https://asciinema.org/a/K6xIZneoTQeuEQyocRskxwwrv.svg)](https://asciinema.org/a/K6xIZneoTQeuEQyocRskxwwrv)
