@@ -1,3 +1,3 @@
-const makeJSONOutput = (array) => JSON.stringify(array).slice(1, -1);
+const makeJSONOutput = (array) => JSON.stringify(array);
 
 export default makeJSONOutput;
