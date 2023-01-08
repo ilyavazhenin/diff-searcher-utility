@@ -105,7 +105,7 @@ const compare = (filePath1, filePath2) => {
   return recursiveCompare(object1, object2);
 };
 
-const showDiff = (path1, path2, format) => {
+const showDiff = (path1, path2, format = 'stylish') => {
   if (format === 'stylish') return makeStylishOutput(compare(path1, path2), format);
   if (format === 'plain') return makePlainOutput(compare(path1, path2), format);
   if (format === 'json') return makeJSONOutput(compare(path1, path2), format);
