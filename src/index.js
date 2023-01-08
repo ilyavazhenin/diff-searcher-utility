@@ -11,81 +11,27 @@ const compare = (filePath1, filePath2) => {
   const recursiveCompare = (obj1, obj2, keyPath = '', depth = 0) => {
     const keys1 = Object.keys(obj1);
     const keys2 = Object.keys(obj2);
+    const unitedUniqueKeys = _.union(keys1, keys2);
+    const sortedKeys = _.sortBy(unitedUniqueKeys);
 
-    const arrayOfChanges = [];
-
-    keys1.forEach((key) => {
+    const arrayOfDiff = sortedKeys.map((key) => {
       const newKeyPath = `${keyPath}.${key}`;
 
-      if (keys2.includes(key)) {
-        // if keys are the same and not objects at the same time:
-        if (obj1[key] === obj2[key]
-          && (!_.isPlainObject(obj1[key]) || !_.isPlainObject(obj2[key]))) {
-          const object = {
-            keyName: `${key}`,
-            keyPath: newKeyPath.slice(1),
-            newValue: obj1[key],
-            conclusion: 'no change',
-            depth,
-          };
-          arrayOfChanges.push(object);
-        }
-
-        // if keys differ:
-        if (obj1[key] !== obj2[key]
-          && (!_.isPlainObject(obj1[key]) || !_.isPlainObject(obj2[key]))) {
-          const object = {
-            keyName: `${key}`,
-            keyPath: newKeyPath.slice(1),
-
-            prevValue: _.isPlainObject(obj1[key]) // go recursive if key is an object
-              ? recursiveCompare(obj1[key], obj1[key], newKeyPath, depth + 1)
-              : obj1[key],
-            newValue: _.isPlainObject(obj2[key])
-              ? recursiveCompare(obj2[key], obj2[key], newKeyPath, depth + 1)
-              : obj2[key],
-
-            conclusion: 'updated',
-            depth,
-          };
-          arrayOfChanges.push(object);
-        }
-
-        // if keys both are objects, we go recursive into deep to get nested values:
-        if (_.isPlainObject(obj1[key]) && _.isPlainObject(obj2[key])) {
-          const object = {
-            keyName: `${key}`,
-            keyPath: newKeyPath.slice(1),
-            newValue: recursiveCompare(obj1[key], obj2[key], newKeyPath, depth + 1),
-            conclusion: 'no change',
-            depth,
-          };
-          arrayOfChanges.push(object);
-        }
-      }
-
-      // checking keys that exist only in first file:
       if (!keys2.includes(key)) {
-        const object = {
+        return {
           keyName: `${key}`,
           keyPath: newKeyPath.slice(1),
-          prevValue: _.isPlainObject(obj1[key])
+          prevValue: _.isPlainObject(obj1[key]) // go recursive if key is an object
             ? recursiveCompare(obj1[key], obj1[key], newKeyPath, depth + 1)
             : obj1[key],
 
           conclusion: 'removed',
           depth,
         };
-        arrayOfChanges.push(object);
       }
-    });
-
-    // checking keys that exist only in second file:
-    keys2.forEach((key) => {
-      const newKeyPath = `${keyPath}.${key}`;
 
       if (!keys1.includes(key)) {
-        const object = {
+        return {
           keyName: `${key}`,
           keyPath: newKeyPath.slice(1),
           newValue: _.isPlainObject(obj2[key])
@@ -95,11 +41,48 @@ const compare = (filePath1, filePath2) => {
           conclusion: 'added',
           depth,
         };
-        arrayOfChanges.push(object);
       }
+
+      if (obj1[key] === obj2[key]
+        && (!_.isPlainObject(obj1[key]) || !_.isPlainObject(obj2[key]))) {
+        return {
+          keyName: `${key}`,
+          keyPath: newKeyPath.slice(1),
+          newValue: obj1[key],
+          conclusion: 'no change',
+          depth,
+        };
+      }
+
+      if (_.isPlainObject(obj1[key]) && _.isPlainObject(obj2[key])) {
+        return {
+          keyName: `${key}`,
+          keyPath: newKeyPath.slice(1),
+          newValue: recursiveCompare(obj1[key], obj2[key], newKeyPath, depth + 1),
+          conclusion: 'no change',
+          depth,
+        };
+      }
+
+      // when values of keys are not equal:
+      return {
+        keyName: `${key}`,
+        keyPath: newKeyPath.slice(1),
+
+        prevValue: _.isPlainObject(obj1[key])
+          ? recursiveCompare(obj1[key], obj1[key], newKeyPath, depth + 1)
+          : obj1[key],
+        newValue: _.isPlainObject(obj2[key])
+          ? recursiveCompare(obj2[key], obj2[key], newKeyPath, depth + 1)
+          : obj2[key],
+
+        conclusion: 'updated',
+        depth,
+      };
     });
-    // console.log(_.sortBy(arrayOfChanges, ['keyName'])); TODO: uncomment to see object structure
-    return _.sortBy(arrayOfChanges, ['keyName']);
+
+    // console.log(arrayOfDiff); TODO: uncomment to see object structure
+    return arrayOfDiff;
   };
 
   return recursiveCompare(object1, object2);
