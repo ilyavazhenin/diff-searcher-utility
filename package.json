@@ -2,7 +2,7 @@
   "name": "@hexlet/code",
   "version": "1.0.0",
   "description": "It finds diff between 2 files and show them in console",
-  "main": "bin/index.js",
+  "main": "src/index.js",
   "type": "module",
   "scripts": {
     "test": "jest"
