@@ -4,13 +4,13 @@ const makePlainOutput = (array) => {
   const lineElements = [];
 
   array.forEach((object) => {
-    const prevValue = (typeof object.prevValue === 'boolean' || typeof object.prevValue === 'object')
-      ? object.prevValue
-      : `'${object.prevValue}'`; // check if we need single quotes for value
+    const prevValue = (typeof object.prevValue === 'string')
+      ? `'${object.prevValue}'`
+      : object.prevValue; // check if we need single quotes for value
 
-    const newValue = (typeof object.newValue === 'boolean' || typeof object.newValue === 'object')
-      ? object.newValue
-      : `'${object.newValue}'`;
+    const newValue = (typeof object.newValue === 'string')
+      ? `'${object.newValue}'`
+      : object.newValue; // check if we need single quotes for value
 
     const makeLeftPartOfLine = () => `Property '${object.keyPath}' was`;
 
