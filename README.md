@@ -31,4 +31,4 @@ Property 'group3' was added with value: [complex value]
 ```
 
 ### Demo
-[![asciicast](https://asciinema.org/a/K6xIZneoTQeuEQyocRskxwwrv.svg)](https://asciinema.org/a/K6xIZneoTQeuEQyocRskxwwrv)
+[![asciicast](https://asciinema.org/a/9pE9Taj5WwUnApy9f4UIZnVGw.svg)](https://asciinema.org/a/9pE9Taj5WwUnApy9f4UIZnVGw)
