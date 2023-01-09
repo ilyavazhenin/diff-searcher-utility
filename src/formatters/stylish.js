@@ -1,51 +1,47 @@
 import _ from 'lodash';
 
 const makeStylishOutput = (array) => {
-  const lineElements = [];
   const spaces = '    ';
-  let sign = '';
+  const minusSign = '  - ';
+  const plusSign = '  + ';
 
-  array.forEach((object) => {
-    const makeLeftPartOfLine = () => `${spaces.repeat(object.depth)}${sign}${object.keyName}`;
+  const lineElements = array.map((object) => {
+    const makeLeftPartOfLine = (sign) => `${spaces.repeat(object.depth)}${sign}${object.keyName}`;
     const endingPartOfLine = `${spaces.repeat(object.depth + 1)}}`;
 
     if (object.conclusion === 'updated') {
-      sign = '  - ';
-      lineElements.push(`${makeLeftPartOfLine()}: ${_.isArray(object.prevValue)
-        ? makeStylishOutput(object.prevValue).slice(0, -1).concat(endingPartOfLine)
-        : object.prevValue}`);
+      return [
+        `${makeLeftPartOfLine(minusSign)}: ${_.isArray(object.prevValue)
+          ? makeStylishOutput(object.prevValue).slice(0, -1).concat(endingPartOfLine)
+          : object.prevValue}`,
 
-      sign = '  + ';
-      lineElements.push(`${makeLeftPartOfLine()}: ${_.isArray(object.newValue)
-        ? makeStylishOutput(object.newValue).slice(0, -1).concat(endingPartOfLine)
-        : object.newValue}`);
+        `${makeLeftPartOfLine(plusSign)}: ${_.isArray(object.newValue)
+          ? makeStylishOutput(object.newValue).slice(0, -1).concat(endingPartOfLine)
+          : object.newValue}`,
+      ];
     }
 
     if (object.conclusion === 'removed') {
-      sign = '  - ';
-      lineElements.push(`${makeLeftPartOfLine()}: ${_.isArray(object.prevValue)
+      return `${makeLeftPartOfLine(minusSign)}: ${_.isArray(object.prevValue)
         ? makeStylishOutput(object.prevValue).slice(0, -1).concat(endingPartOfLine)
-        : object.prevValue}`);
+        : object.prevValue}`;
     }
 
     if (object.conclusion === 'added') {
-      sign = '  + ';
-      lineElements.push(`${makeLeftPartOfLine()}: ${_.isArray(object.newValue)
+      return `${makeLeftPartOfLine(plusSign)}: ${_.isArray(object.newValue)
         ? makeStylishOutput(object.newValue).slice(0, -1).concat(endingPartOfLine)
-        : object.newValue}`);
+        : object.newValue}`;
     }
 
-    if (object.conclusion === 'no change') {
-      sign = '    ';
-      lineElements.push(`${makeLeftPartOfLine()}: ${_.isArray(object.newValue)
-        ? makeStylishOutput(object.newValue).slice(0, -1).concat(endingPartOfLine)
-        : object.newValue}`);
-    }
+    // other cases when object.conclusion === 'no changes':
+    return `${makeLeftPartOfLine(spaces)}: ${_.isArray(object.newValue)
+      ? makeStylishOutput(object.newValue).slice(0, -1).concat(endingPartOfLine)
+      : object.newValue}`;
   });
 
   const outputArray = [
     '{',
-    ...lineElements,
+    ..._.flattenDeep(lineElements),
     '}',
   ];
   return outputArray.join('\n');

@@ -80,8 +80,8 @@ const compare = (filePath1, filePath2) => {
         depth,
       };
     });
-
-    // console.log(arrayOfDiff); TODO: uncomment to see object structure
+    // TODO: uncomment to see object structure"
+    // console.log(arrayOfDiff);
     return arrayOfDiff;
   };
 
