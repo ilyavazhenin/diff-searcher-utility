@@ -10,7 +10,6 @@ program
   .version('0.0.1')
   .arguments('<filepath1> <filepath2>')
   .option('-f, --format <type>', 'output format', 'stylish')
-  // .action(showDiff);
   .action(() => {
     console.log(showDiff(program.args[0], program.args[1], program.opts().format));
   });
