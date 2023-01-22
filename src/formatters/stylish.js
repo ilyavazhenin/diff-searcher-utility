@@ -33,10 +33,12 @@ const makeStylishOutput = (array) => {
         : object.newValue}`;
     }
 
+    if (object.conclusion === 'nested') {
+      return `${makeLeftPartOfLine(spaces)}: ${makeStylishOutput(object.newValue).slice(0, -1).concat(endingPartOfLine)}`;
+    }
+
     // other cases when object.conclusion === 'no changes':
-    return `${makeLeftPartOfLine(spaces)}: ${_.isArray(object.newValue)
-      ? makeStylishOutput(object.newValue).slice(0, -1).concat(endingPartOfLine)
-      : object.newValue}`;
+    return `${makeLeftPartOfLine(spaces)}: ${object.newValue}`;
   });
 
   const outputArray = [

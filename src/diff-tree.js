@@ -51,7 +51,7 @@ const recursiveCompare = (obj1, obj2, keyPath = '', depth = 0) => {
         keyName: `${key}`,
         keyPath: newKeyPath.slice(1),
         newValue: recursiveCompare(obj1[key], obj2[key], newKeyPath, depth + 1),
-        conclusion: 'no change',
+        conclusion: 'nested',
         depth,
       };
     }

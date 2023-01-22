@@ -30,10 +30,12 @@ const makePlainOutput = (array) => {
           : ''.concat(`${newValue}`)}`;
       }
 
+      if (object.conclusion === 'nested') {
+        return `${makePlainOutput(newValue)}`;
+      }
+
       if (object.conclusion === 'no change' && _.isArray(newValue)) {
-        return `${_.isArray(newValue)
-          ? makePlainOutput(newValue)
-          : makeLeftPartOfLine().concat(`${newValue}`)}`;
+        return `${makeLeftPartOfLine().concat(`${newValue}`)}`;
       }
 
       // all other cases left (when a key was removed):
