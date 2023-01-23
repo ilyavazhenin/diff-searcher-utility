@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-const makePlainOutput = (array) => {
+const makePlainOutput = (array, keyPath = []) => {
   const lineElements = array.filter((object) => {
     if (!(object.conclusion === 'no change' && !_.isArray(object.newValue))) return true;
     return false;
@@ -14,27 +14,28 @@ const makePlainOutput = (array) => {
         ? `'${object.newValue}'`
         : object.newValue;
 
-      const makeLeftPartOfLine = () => `Property '${object.keyPath}' was`;
+      const accumPath = _.concat(keyPath, object.keyName);
+      const makeLeftPartOfLine = () => `Property '${accumPath.join('.')}' was`;
 
       if (object.conclusion === 'updated') {
-        return `${makeLeftPartOfLine()} updated. From ${_.isArray(prevValue)
+        return `${makeLeftPartOfLine()} updated. From ${_.isObjectLike(prevValue)
           ? '[complex value]'
-          : ''.concat(`${prevValue}`)} to ${_.isArray(newValue)
+          : ''.concat(`${prevValue}`)} to ${_.isObjectLike(newValue)
           ? '[complex value]'
           : ''.concat(`${newValue}`)}`;
       }
 
       if (object.conclusion === 'added') {
-        return `${makeLeftPartOfLine()} added with value: ${_.isArray(newValue)
+        return `${makeLeftPartOfLine()} added with value: ${_.isObjectLike(newValue)
           ? '[complex value]'
           : ''.concat(`${newValue}`)}`;
       }
 
       if (object.conclusion === 'nested') {
-        return `${makePlainOutput(newValue)}`;
+        return `${makePlainOutput(newValue, accumPath)}`;
       }
 
-      if (object.conclusion === 'no change' && _.isArray(newValue)) {
+      if (object.conclusion === 'no change' && _.isObjectLike(newValue)) {
         return `${makeLeftPartOfLine().concat(`${newValue}`)}`;
       }
 

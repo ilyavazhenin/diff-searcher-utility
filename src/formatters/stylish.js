@@ -1,52 +1,56 @@
 import _ from 'lodash';
 
+const spaces = 4;
+
+const makeLeftSpaces = (depth) => ' '.repeat(depth * spaces - 2);
+
+const getValueString = (value, depth) => {
+  const iter = (itrValue, itrDepth) => {
+    if (!_.isObject(itrValue)) {
+      return itrValue;
+    }
+    const itrData = Object.entries(itrValue);
+    const output = itrData.map(([itrDataKey, itrDataValue]) => {
+      if (!_.isObject(itrDataValue)) {
+        return `${' '.repeat(spaces * (itrDepth + 1))}${itrDataKey}: ${itrDataValue}`;
+      }
+      return `${' '.repeat(spaces * (itrDepth + 1))}${itrDataKey}: ${iter(itrDataValue, itrDepth + 1)}`;
+    });
+    return `{\n${output.join('\n')}\n${' '.repeat(spaces * itrDepth)}}`;
+  };
+
+  return iter(value, depth);
+};
+
 const makeStylishOutput = (array) => {
-  const spaces = '    ';
-  const minusSign = '  - ';
-  const plusSign = '  + ';
+  const makeLine = (differencesData, depth = 1) => {
+    const outputLines = differencesData.flatMap(({
+      keyName,
+      conclusion,
+      newValue,
+      prevValue,
+    }) => {
+      switch (conclusion) {
+        case 'nested':
+          return `${makeLeftSpaces(depth)}  ${keyName}: ${makeLine(newValue, depth + 1, spaces)}`;
+        case 'added':
+          return `${makeLeftSpaces(depth)}+ ${keyName}: ${getValueString(newValue, depth, spaces)}`;
+        case 'removed':
+          return `${makeLeftSpaces(depth)}- ${keyName}: ${getValueString(prevValue, depth, spaces)}`;
+        case 'no change':
+          return `${makeLeftSpaces(depth)}  ${keyName}: ${getValueString(newValue, depth, spaces)}`;
+        case 'updated':
+          return `${makeLeftSpaces(depth)}- ${keyName}: ${getValueString(prevValue, depth, spaces)}\n`
+            .concat(`${makeLeftSpaces(depth)}+ ${keyName}: ${getValueString(newValue, depth, spaces)}`);
+        default:
+          throw new Error(`This type of change can't be parsed: ${conclusion}`);
+      }
+    });
 
-  const lineElements = array.map((object) => {
-    const makeLeftPartOfLine = (sign) => `${spaces.repeat(object.depth)}${sign}${object.keyName}`;
-    const endingPartOfLine = `${spaces.repeat(object.depth + 1)}}`;
+    return `{\n${outputLines.join('\n')}\n${' '.repeat(depth * spaces - 4)}}`;
+  };
 
-    if (object.conclusion === 'updated') {
-      return [
-        `${makeLeftPartOfLine(minusSign)}: ${_.isArray(object.prevValue)
-          ? makeStylishOutput(object.prevValue).slice(0, -1).concat(endingPartOfLine)
-          : object.prevValue}`,
-
-        `${makeLeftPartOfLine(plusSign)}: ${_.isArray(object.newValue)
-          ? makeStylishOutput(object.newValue).slice(0, -1).concat(endingPartOfLine)
-          : object.newValue}`,
-      ];
-    }
-
-    if (object.conclusion === 'removed') {
-      return `${makeLeftPartOfLine(minusSign)}: ${_.isArray(object.prevValue)
-        ? makeStylishOutput(object.prevValue).slice(0, -1).concat(endingPartOfLine)
-        : object.prevValue}`;
-    }
-
-    if (object.conclusion === 'added') {
-      return `${makeLeftPartOfLine(plusSign)}: ${_.isArray(object.newValue)
-        ? makeStylishOutput(object.newValue).slice(0, -1).concat(endingPartOfLine)
-        : object.newValue}`;
-    }
-
-    if (object.conclusion === 'nested') {
-      return `${makeLeftPartOfLine(spaces)}: ${makeStylishOutput(object.newValue).slice(0, -1).concat(endingPartOfLine)}`;
-    }
-
-    // other cases when object.conclusion === 'no changes':
-    return `${makeLeftPartOfLine(spaces)}: ${object.newValue}`;
-  });
-
-  const outputArray = [
-    '{',
-    ..._.flattenDeep(lineElements),
-    '}',
-  ];
-  return outputArray.join('\n');
+  return makeLine(array);
 };
 
 export default makeStylishOutput;
