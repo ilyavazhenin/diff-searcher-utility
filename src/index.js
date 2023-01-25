@@ -5,7 +5,8 @@ import makeDiffTree from './diff-tree.js';
 import formatTree from './formatters/format-options.js';
 
 const showDiff = (filePath1, filePath2, format = 'stylish') => {
-  const [object1, object2] = parseFiles(filePath1, filePath2);
+  const object1 = parseFiles(filePath1);
+  const object2 = parseFiles(filePath2);
   const diffTree = makeDiffTree(object1, object2);
   return formatTree(diffTree, format);
 };
