@@ -1,6 +1,0 @@
-{
-  "host": "google.com",
-  "timeout": 150,
-  "proxy": "8.8.8.8",
-  "follow": true
-}

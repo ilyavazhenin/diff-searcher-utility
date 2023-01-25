@@ -1,34 +1,21 @@
 import yaml from 'js-yaml';
 import fs from 'fs';
 import path from 'path';
+import getExtension from './utils.js';
 
-const isYaml = (string1, string2) => {
-  if ((string1.endsWith('yaml') || string1.endsWith('yml'))
-  && (string2.endsWith('yaml') || string2.endsWith('yml'))) {
-    return true;
-  }
-  return false;
-};
-
-const isJson = (string1, string2) => {
-  if (string1.endsWith('json') && string2.endsWith('json')) {
-    return true;
-  }
-  return false;
-};
-
-export default (path1, path2) => {
+const parseFile = (filepath) => {
   // yaml parsing:
-  if (isYaml(path1, path2)) {
-    const fileData1 = yaml.load(fs.readFileSync(path1, 'utf8'));
-    const fileData2 = yaml.load(fs.readFileSync(path2, 'utf8'));
-    return [fileData1, fileData2];
+  if (getExtension(filepath) === 'yaml') {
+    const fileData = yaml.load(fs.readFileSync(path.resolve(filepath), 'utf8'));
+    return fileData;
   }
+
   // json parsing:
-  if (isJson(path1, path2)) {
-    const fileData1 = JSON.parse(fs.readFileSync(path.resolve(path1)));
-    const fileData2 = JSON.parse(fs.readFileSync(path.resolve(path2)));
-    return [fileData1, fileData2];
+  if (getExtension(filepath) === 'json') {
+    const fileData = JSON.parse(fs.readFileSync(path.resolve(filepath)));
+    return fileData;
   }
-  throw console.error('Different file formats, both should be "yaml/yml" or "json".');
+  throw console.error('Wrong file formats, both should be "yaml/yml" or "json".');
 };
+
+export default parseFile;
