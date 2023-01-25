@@ -48,8 +48,8 @@ const makeDiffTree = (objectData1, objectData2) => {
         conclusion: 'updated',
       };
     });
-    // TODO: uncomment to see object structure:
-    console.log(arrayOfDiff);
+    // // TODO: uncomment to see object structure:
+    // console.log(arrayOfDiff);
     return arrayOfDiff;
   };
 
