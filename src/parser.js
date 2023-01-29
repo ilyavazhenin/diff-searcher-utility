@@ -1,21 +1,20 @@
 import yaml from 'js-yaml';
-import fs from 'fs';
+import { readFileSync } from 'fs';
 import path from 'path';
+
 import getExtension from './utils.js';
 
 const parseFile = (filepath) => {
-  // yaml parsing:
-  if (getExtension(filepath) === 'yaml') {
-    const fileData = yaml.load(fs.readFileSync(path.resolve(filepath), 'utf8'));
-    return fileData;
-  }
+  switch (getExtension(filepath)) {
+    case 'yaml':
+      return yaml.load(readFileSync(path.resolve(process.cwd(), filepath)), 'utf-8');
 
-  // json parsing:
-  if (getExtension(filepath) === 'json') {
-    const fileData = JSON.parse(fs.readFileSync(path.resolve(filepath)));
-    return fileData;
+    case 'json':
+      return JSON.parse(readFileSync(path.resolve(process.cwd(), filepath)), 'utf-8');
+
+    default:
+      throw console.error('Wrong file format, only "yaml/yml" or "json" allowed.');
   }
-  throw console.error('Wrong file format, only "yaml/yml" or "json" allowed.');
 };
 
 export default parseFile;

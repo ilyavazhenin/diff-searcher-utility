@@ -5,21 +5,21 @@ const spaces = 4;
 const makeLeftSpaces = (depth) => ' '.repeat(depth * spaces - 2);
 
 const getValueString = (value, depth) => {
-  const iter = (itrValue, itrDepth) => {
-    if (!_.isObject(itrValue)) {
-      return itrValue;
+  const recursive = (iterValue, iterDepth) => {
+    if (!_.isObject(iterValue)) {
+      return iterValue;
     }
-    const itrData = Object.entries(itrValue);
-    const output = itrData.map(([itrDataKey, itrDataValue]) => {
-      if (!_.isObject(itrDataValue)) {
-        return `${' '.repeat(spaces * (itrDepth + 1))}${itrDataKey}: ${itrDataValue}`;
+    const iterData = Object.entries(iterValue);
+    const output = iterData.map(([iterDataKey, iterDataValue]) => {
+      if (!_.isObject(iterDataValue)) {
+        return `${' '.repeat(spaces * (iterDepth + 1))}${iterDataKey}: ${iterDataValue}`;
       }
-      return `${' '.repeat(spaces * (itrDepth + 1))}${itrDataKey}: ${iter(itrDataValue, itrDepth + 1)}`;
+      return `${' '.repeat(spaces * (iterDepth + 1))}${iterDataKey}: ${recursive(iterDataValue, iterDepth + 1)}`;
     });
-    return `{\n${output.join('\n')}\n${' '.repeat(spaces * itrDepth)}}`;
+    return `{\n${output.join('\n')}\n${' '.repeat(spaces * iterDepth)}}`;
   };
 
-  return iter(value, depth);
+  return recursive(value, depth);
 };
 
 const makeStylishOutput = (array) => {

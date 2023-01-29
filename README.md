@@ -5,6 +5,15 @@
 It's a JS library that finds diff between two files and shows this diff in command line.
 Works with JSON and YAML formats. Has 3 output formats: stylish (by default), plain and json.
 
+## Requirements
+- NodeJS >= 16
+- *NIX OS or WSL for Windows
+
+## How to install
+1. **Clone** this repo
+2. Go to the **project folder**
+3. Run: **make install**
+
 ## How to use
 ```
 gendiff -f <format> <file-path-1> <file-path-2>
@@ -15,7 +24,7 @@ For example:
 gendiff -f plain src/smth.json src/hello.json
 ```
 
-And you see the result (for plain format):
+And you see the result (for *plain* output formatter):
 ```
 Property 'common.follow' was added with value: false
 Property 'common.setting2' was removed
@@ -29,6 +38,8 @@ Property 'group1.nest' was updated. From [complex value] to 'str'
 Property 'group2' was removed
 Property 'group3' was added with value: [complex value]
 ```
+
+Try other formatters like *stylish* or *json* by yourself or see the demo.
 
 ### Demo
 [![asciicast](https://asciinema.org/a/9pE9Taj5WwUnApy9f4UIZnVGw.svg)](https://asciinema.org/a/9pE9Taj5WwUnApy9f4UIZnVGw)
