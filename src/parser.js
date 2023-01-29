@@ -15,7 +15,7 @@ const parseFile = (filepath) => {
     const fileData = JSON.parse(fs.readFileSync(path.resolve(filepath)));
     return fileData;
   }
-  throw console.error('Wrong file formats, both should be "yaml/yml" or "json".');
+  throw console.error('Wrong file format, only "yaml/yml" or "json" allowed.');
 };
 
 export default parseFile;
