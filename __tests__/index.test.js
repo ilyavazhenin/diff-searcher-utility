@@ -9,43 +9,24 @@ const __dirname = path.dirname(__filename);
 const getFixturePath = (folderName, fileName) => path.join(__dirname, '..', '__fixtures__', folderName, fileName);
 const readFile = (folderName, filename) => readFileSync(getFixturePath(folderName, filename), 'utf-8');
 
-const json1 = getFixturePath('test-data', 'nested-file1.json');
-const json2 = getFixturePath('test-data', 'nested-file2.json');
-const yaml1 = getFixturePath('test-data', 'nested-yaml1.yaml');
-const yaml2 = getFixturePath('test-data', 'nested-yaml2.yaml');
-const stylishExpected = readFile('results', 'nested-stylish.txt');
-const plainExpected = readFile('results', 'nested-plain.txt');
-const jsonExpected = readFile('results', 'nested-json.json');
-const emptyExpected = readFile('results', 'empty-file.txt');
-
 test.each([
-  { file1: json1, file2: json2, ext: 'json' },
-  { file1: yaml1, file2: yaml2, ext: 'yaml' },
-])('stylish output, nested ($ext)', ({ file1, file2 }) => {
-  expect(showDiff(file1, file2, 'stylish')).toBe(stylishExpected);
+  ['nested-file1.json', 'nested-file2.json', 'stylish', 'nested-stylish.txt'],
+  ['nested-yaml1.yaml', 'nested-yaml2.yaml', 'stylish', 'nested-stylish.txt'],
+  ['nested-file1.json', 'nested-file2.json', 'plain', 'nested-plain.txt'],
+  ['nested-yaml1.yaml', 'nested-yaml2.yaml', 'plain', 'nested-plain.txt'],
+  ['nested-file1.json', 'nested-file2.json', 'json', 'nested-json.json'],
+  ['nested-yaml1.yaml', 'nested-yaml2.yaml', 'json', 'nested-json.json'],
+  ['file1-empty.json', 'file2.json', 'stylish', 'empty-file.txt'],
+])('Comparing "%s" and "%s" with "%s" formatter equals to "%s"', (fName1, fName2, frmt, expected) => {
+  const result = readFile('results', expected);
+  const file1 = getFixturePath('test-data', fName1);
+  const file2 = getFixturePath('test-data', fName2);
+  expect(showDiff(file1, file2, frmt)).toBe(result);
 });
 
-test.each([
-  { file1: json1, file2: json2, ext: 'json' },
-  { file1: yaml1, file2: yaml2, ext: 'yaml' },
-])('plain output, nested ($ext)', ({ file1, file2 }) => {
-  expect(showDiff(file1, file2, 'plain')).toBe(plainExpected);
-});
-
-test.each([
-  { file1: json1, file2: json2, ext: 'json' },
-  { file1: yaml1, file2: yaml2, ext: 'yaml' },
-])('json output, nested ($ext)', ({ file1, file2 }) => {
-  expect(showDiff(file1, file2, 'json')).toBe(jsonExpected);
-});
-
-test('file 1 empty', () => {
-  const filepath1 = getFixturePath('test-data', 'file1-empty.json');
-  const filepath2 = getFixturePath('test-data', 'file2.json');
-  expect(showDiff(filepath1, filepath2, 'stylish')).toEqual(emptyExpected);
-});
-
-test('wrong formatter', () => {
-  expect(() => showDiff(json1, json2, 'someFormat'))
+test('Wrong formatter', () => {
+  const file1 = getFixturePath('test-data', 'nested-file1.json');
+  const file2 = getFixturePath('test-data', 'nested-file2.json');
+  expect(() => showDiff(file1, file2, 'someFormat'))
     .toThrow('Unknown formatter, available formatters: stylish (default), plain, json.');
 });

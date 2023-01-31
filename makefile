@@ -1,11 +1,11 @@
 make install:
 	npm install
 
-make link:
-	npm link
-
 make lint:
 	npx eslint .
+
+make link:
+	npm link
 
 make jest:
 	npx jest

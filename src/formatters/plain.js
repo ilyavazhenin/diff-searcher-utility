@@ -43,11 +43,9 @@ const makePlainOutput = (array, keyPath = []) => {
       return `${makeLeftPartOfLine()} removed`;
     });
 
-  const outputArray = [
+  return [
     ...lineElements,
-  ];
-
-  return outputArray.join('\n');
+  ].join('\n');
 };
 
 export default makePlainOutput;
