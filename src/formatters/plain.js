@@ -1,42 +1,25 @@
 import _ from 'lodash';
+import { makeComplexValueStrIfNeeded, makeQuotesIfNeeded } from './formatter-utils.js';
 
 const makePlainOutput = (array, keyPath = []) => {
-  const lineElements = array.filter((object) => {
-    if (!(object.conclusion === 'no change' && !_.isArray(object.newValue))) return true;
-    return false;
-  })
+  const lineElements = array.filter((object) => !(object.conclusion === 'no change' && !_.isArray(object.newValue)))
     .map((object) => {
-      const prevValue = (typeof object.prevValue === 'string')
-        ? `'${object.prevValue}'`
-        : object.prevValue; // check if we need single quotes for value
-
-      const newValue = (typeof object.newValue === 'string')
-        ? `'${object.newValue}'`
-        : object.newValue;
+      const prevValue = makeQuotesIfNeeded(object.prevValue);
+      const newValue = makeQuotesIfNeeded(object.newValue);
 
       const accumPath = _.concat(keyPath, object.keyName);
       const makeLeftPartOfLine = () => `Property '${accumPath.join('.')}' was`;
 
       if (object.conclusion === 'updated') {
-        return `${makeLeftPartOfLine()} updated. From ${_.isObjectLike(prevValue)
-          ? '[complex value]'
-          : ''.concat(`${prevValue}`)} to ${_.isObjectLike(newValue)
-          ? '[complex value]'
-          : ''.concat(`${newValue}`)}`;
+        return `${makeLeftPartOfLine()} updated. From ${makeComplexValueStrIfNeeded(prevValue)} to ${makeComplexValueStrIfNeeded(newValue)}`;
       }
 
       if (object.conclusion === 'added') {
-        return `${makeLeftPartOfLine()} added with value: ${_.isObjectLike(newValue)
-          ? '[complex value]'
-          : ''.concat(`${newValue}`)}`;
+        return `${makeLeftPartOfLine()} added with value: ${makeComplexValueStrIfNeeded(newValue)}`;
       }
 
       if (object.conclusion === 'nested') {
         return `${makePlainOutput(newValue, accumPath)}`;
-      }
-
-      if (object.conclusion === 'no change' && _.isObjectLike(newValue)) {
-        return `${makeLeftPartOfLine().concat(`${newValue}`)}`;
       }
 
       // all other cases left (when a key was removed):
