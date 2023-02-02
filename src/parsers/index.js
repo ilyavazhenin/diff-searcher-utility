@@ -2,14 +2,14 @@ import { parseJson, parseYaml } from './parser-utils.js';
 
 const erorrExtensionMsg = 'Wrong file formats, both should be "yaml/yml" or "json".';
 
-const parseFile = (content, type) => {
-  switch (type) {
+const parseFile = (data, extension) => {
+  switch (extension) {
     case 'json':
-      return parseJson(content);
+      return parseJson(data);
 
     case 'yml':
     case 'yaml':
-      return parseYaml(content);
+      return parseYaml(data);
     default:
       throw new Error(erorrExtensionMsg);
   }
