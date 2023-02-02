@@ -1,8 +1,8 @@
 import _ from 'lodash';
-import { makeComplexValueStrIfNeeded, makeQuotesIfNeeded } from './formatter-utils.js';
+import { makeComplexValueStrIfNeeded, makeQuotesIfNeeded, isChanged } from './formatter-utils.js';
 
 const makePlainOutput = (array, keyPath = []) => {
-  const lineElements = array.filter((object) => !(object.conclusion === 'no change' && !_.isArray(object.newValue)))
+  const lineElements = array.filter((object) => isChanged(object))
     .map((object) => {
       const prevValue = makeQuotesIfNeeded(object.prevValue);
       const newValue = makeQuotesIfNeeded(object.newValue);
@@ -22,7 +22,6 @@ const makePlainOutput = (array, keyPath = []) => {
         return `${makePlainOutput(newValue, accumPath)}`;
       }
 
-      // all other cases left (when a key was removed):
       return `${makeLeftPartOfLine()} removed`;
     });
 

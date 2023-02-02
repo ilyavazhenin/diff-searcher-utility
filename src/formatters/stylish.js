@@ -1,19 +1,14 @@
 import _ from 'lodash';
 
 const spaces = 4;
-
 const makeLeftSpaces = (depth) => ' '.repeat(depth * spaces - 2);
 
 const getValueString = (value, depth) => {
   const recursive = (iterValue, iterDepth) => {
-    if (!_.isObject(iterValue)) {
-      return iterValue;
-    }
+    if (!_.isObject(iterValue)) return iterValue;
     const iterData = Object.entries(iterValue);
     const output = iterData.map(([iterDataKey, iterDataValue]) => {
-      if (!_.isObject(iterDataValue)) {
-        return `${' '.repeat(spaces * (iterDepth + 1))}${iterDataKey}: ${iterDataValue}`;
-      }
+      if (!_.isObject(iterDataValue)) return `${' '.repeat(spaces * (iterDepth + 1))}${iterDataKey}: ${iterDataValue}`;
       return `${' '.repeat(spaces * (iterDepth + 1))}${iterDataKey}: ${recursive(iterDataValue, iterDepth + 1)}`;
     });
     return `{\n${output.join('\n')}\n${' '.repeat(spaces * iterDepth)}}`;
@@ -32,18 +27,17 @@ const makeStylishOutput = (array) => {
     }) => {
       switch (conclusion) {
         case 'nested':
-          return `${makeLeftSpaces(depth)}  ${keyName}: ${makeLine(newValue, depth + 1, spaces)}`;
+          return `${makeLeftSpaces(depth)}  ${keyName}: ${makeLine(newValue, depth + 1)}`;
         case 'added':
-          return `${makeLeftSpaces(depth)}+ ${keyName}: ${getValueString(newValue, depth, spaces)}`;
+          return `${makeLeftSpaces(depth)}+ ${keyName}: ${getValueString(newValue, depth)}`;
         case 'removed':
-          return `${makeLeftSpaces(depth)}- ${keyName}: ${getValueString(prevValue, depth, spaces)}`;
+          return `${makeLeftSpaces(depth)}- ${keyName}: ${getValueString(prevValue, depth)}`;
         case 'no change':
-          return `${makeLeftSpaces(depth)}  ${keyName}: ${getValueString(newValue, depth, spaces)}`;
+          return `${makeLeftSpaces(depth)}  ${keyName}: ${getValueString(newValue, depth)}`;
         case 'updated':
-          return `${makeLeftSpaces(depth)}- ${keyName}: ${getValueString(prevValue, depth, spaces)}\n`
-            .concat(`${makeLeftSpaces(depth)}+ ${keyName}: ${getValueString(newValue, depth, spaces)}`);
-        default:
-          throw new Error(`This type of change can't be parsed: ${conclusion}`);
+          return `${makeLeftSpaces(depth)}- ${keyName}: ${getValueString(prevValue, depth)}\n`
+            .concat(`${makeLeftSpaces(depth)}+ ${keyName}: ${getValueString(newValue, depth)}`);
+        default: throw new Error(`This type of change can't be parsed: ${conclusion}`);
       }
     });
 

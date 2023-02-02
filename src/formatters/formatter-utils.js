@@ -10,4 +10,10 @@ const makeComplexValueStrIfNeeded = (value) => {
   return formattedValue;
 };
 
-export { makeQuotesIfNeeded, makeComplexValueStrIfNeeded };
+const isChanged = (object) => !(object.conclusion === 'no change' && !_.isArray(object.newValue));
+
+export {
+  makeQuotesIfNeeded,
+  makeComplexValueStrIfNeeded,
+  isChanged,
+};
